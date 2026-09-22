@@ -40,6 +40,7 @@ from app.image_gen_tool import generate_architecture_diagram
 from app.doc_generator_tool import generate_synthetic_confluence_doc
 from app.code_auditor_tool import audit_codebase_compliance
 from app.quiz_generator_tool import generate_onboarding_quiz
+from app.analytics_tool import get_knowledge_analytics
 
 logger = logging.getLogger(__name__)
 
@@ -162,6 +163,7 @@ root_agent = Agent(
         generate_synthetic_confluence_doc,
         audit_codebase_compliance,
         generate_onboarding_quiz,
+        get_knowledge_analytics,
     ],
     after_model_callback=a2ui_callback,
     after_agent_callback=generate_memories_callback,

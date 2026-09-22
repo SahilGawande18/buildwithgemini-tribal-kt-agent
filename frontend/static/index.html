@@ -120,6 +120,9 @@
 
     <!-- Quick Action Pills -->
     <div class="quick-bar">
+      <button class="pill-btn" onclick="quickAction('analytics')">
+        <span class="material-symbols-outlined">analytics</span> Knowledge Analytics
+      </button>
       <button class="pill-btn" onclick="quickAction('quiz')">
         <span class="material-symbols-outlined">quiz</span> Take Onboarding Quiz
       </button>
@@ -284,7 +287,9 @@ function loadActiveSession() {
 
 function quickAction(type) {
   const proj = projectSelect.value;
-  if (type === "quiz") {
+  if (type === "analytics") {
+    input.value = `Generate knowledge analytics and documentation metrics for project '${proj}'`;
+  } else if (type === "quiz") {
     input.value = `Generate an interactive technical onboarding quiz for project '${proj}'`;
   } else if (type === "audit") {
     input.value = `Audit codebase compliance for project '${proj}' with code:\n\nfrom google.cloud import firestore\ndb = firestore.Client()`;
