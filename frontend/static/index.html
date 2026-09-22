@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tribal KT Platform — AI Knowledge & Engineering Assistant</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined">
+<style>
+  :root { --accent:#1a73e8; --bg:#f8f9fa; --border:#dadce0; --dark:#202124; --sidebar-bg:#171717; --sidebar-hover:#212121; --sidebar-active:#2f2f2f; --sidebar-text:#ececec; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:system-ui,-apple-system,sans-serif; background:var(--bg); height:100vh; overflow:hidden; color:var(--dark); }
+  
+  #app-layout { display:flex; width:100vw; height:100vh; }
+  
+  /* --- ChatGPT Style Left Sidebar --- */
+  #sidebar { width:280px; background:var(--sidebar-bg); color:var(--sidebar-text); display:flex; flex-direction:column; border-right:1px solid #2f2f2f; flex-shrink:0; }
+  .sidebar-header { padding:.9rem 1rem; border-bottom:1px solid #262626; display:flex; flex-direction:column; gap:.7rem; }
+  .new-chat-btn { background:#2f2f2f; color:#fff; border:1px solid #424242; padding:.65rem 1rem; border-radius:8px; font-weight:600; font-size:.9rem; cursor:pointer; display:flex; align-items:center; justify-content:space-between; transition:all .2s; }
+  .new-chat-btn:hover { background:#383838; border-color:#525252; }
+  
+  .session-section-title { font-size:.75rem; text-transform:uppercase; letter-spacing:.05em; color:#8e8e8e; padding:.5rem 1rem .2rem; font-weight:700; }
+  #sessionList { flex:1; overflow-y:auto; padding:.5rem; display:flex; flex-direction:column; gap:.2rem; }
+  
+  .session-item { padding:.65rem .8rem; border-radius:8px; display:flex; align-items:center; justify-content:space-between; cursor:pointer; font-size:.88rem; color:#c5c5c5; transition:background .15s; }
+  .session-item:hover { background:var(--sidebar-hover); color:#fff; }
+  .session-item.active { background:var(--sidebar-active); color:#fff; font-weight:600; }
+  .session-title { flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-right:.4rem; }
+  .session-actions { display:none; gap:.3rem; }
+  .session-item:hover .session-actions, .session-item.active .session-actions { display:flex; }
+  .icon-btn { background:none; border:none; color:#9b9b9b; cursor:pointer; padding:2px; border-radius:4px; display:flex; align-items:center; }
+  .icon-btn:hover { color:#fff; background:#424242; }
+
+  /* --- Main Content & Chat Area --- */
+  #main-content { flex:1; display:flex; flex-direction:column; background:var(--bg); height:100vh; overflow:hidden; }
+  header { background:#fff; border-bottom:1px solid var(--border); padding:.75rem 1.2rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:.8rem; }
+  .brand { font-weight:700; font-size:1.15rem; color:var(--accent); display:flex; align-items:center; gap:.4rem; }
+  .controls { display:flex; align-items:center; gap:.6rem; flex-wrap:wrap; }
+  select, button.btn-sm { padding:.45rem .75rem; border:1px solid var(--border); border-radius:6px; background:#fff; font-size:.88rem; font-weight:500; cursor:pointer; }
+  select:focus { border-color:var(--accent); outline:none; }
+  button.btn-accent { background:var(--accent); color:#fff; border:none; }
+  button.btn-accent:hover { background:#1557b0; }
+
+  #log { flex:1; overflow-y:auto; padding:1.2rem; max-width:860px; width:100%; margin:0 auto; }
+  .msg { margin:.75rem 0; }
+  .msg.user { text-align:right; }
+  .bubble { display:inline-block; padding:.75rem 1.1rem; border-radius:12px; background:#fff; border:1px solid var(--border); text-align:left; max-width:88%; white-space:pre-wrap; line-height:1.45; box-shadow:0 1px 2px rgba(0,0,0,.04); }
+  .msg.user .bubble { background:var(--accent); color:#fff; border:none; }
+  .bubble.rich { background:transparent; border:none; padding:0; max-width:100%; white-space:normal; box-shadow:none; }
+  
+  form { display:flex; gap:.5rem; padding:1rem 1.2rem; border-top:1px solid var(--border); background:#fff; max-width:860px; width:100%; margin:0 auto; align-items:center; }
+  input[type="text"] { flex:1; padding:.75rem 1rem; border:1px solid var(--border); border-radius:8px; font-size:.95rem; }
+  input[type="text"]:focus { border-color:var(--accent); outline:none; }
+  input[type="file"] { display:none; }
+  .file-label { padding:.75rem 1rem; border:1px solid var(--border); border-radius:8px; background:#f1f3f4; cursor:pointer; display:flex; align-items:center; gap:.4rem; font-weight:500; font-size:.9rem; }
+  .file-label:hover { background:#e8eaed; }
+
+  /* --- A2UI component styles --- */
+  .a2card { border:1px solid var(--border); border-radius:12px; padding:1.1rem; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.06); max-width:100%; }
+  .a2card + .a2card, .a2col > .a2card { margin-top:.6rem; }
+  .a2col { display:flex; flex-direction:column; gap:.4rem; }
+  .a2row { display:flex; flex-direction:row; gap:.6rem; align-items:center; flex-wrap:wrap; }
+  .a2row.between { justify-content:space-between; }
+  .a2text { margin:0; line-height:1.45; }
+  .a2text.a2-h1 { font-size:1.4rem; font-weight:700; color:#1a73e8; }
+  .a2text.a2-h2 { font-size:1.2rem; font-weight:700; }
+  .a2text.a2-h3 { font-size:1.05rem; font-weight:600; }
+  .a2text.a2-caption { font-size:.85rem; color:#5f6368; }
+  .a2divider { border:none; border-top:1px solid var(--border); margin:.5rem 0; width:100%; }
+  .a2img { max-width:100%; border-radius:8px; display:block; margin-top:.5rem; border:1px solid var(--border); }
+  .material-symbols-outlined { font-family:'Material Symbols Outlined'; font-size:1.2rem; line-height:1; vertical-align:middle; }
+</style>
+</head>
+<body>
+
+<div id="app-layout">
+  <!-- ChatGPT Style Left Sidebar -->
+  <aside id="sidebar">
+    <div class="sidebar-header">
+      <button class="new-chat-btn" id="newChatBtn">
+        <span>+ New Chat</span>
+        <span class="material-symbols-outlined">edit_square</span>
+      </button>
+    </div>
+    <div class="session-section-title">Recent Conversations</div>
+    <div id="sessionList"></div>
+  </aside>
+
+  <!-- Right Main Content -->
+  <main id="main-content">
+    <header>
+      <div class="brand">
+        <span class="material-symbols-outlined" style="color:var(--accent);">hub</span> Tribal KT Platform
+      </div>
+      <div class="controls">
+        <label style="font-size:.85rem; font-weight:600; color:#5f6368;">Project:</label>
+        <select id="projectSelect">
+          <option value="Billing Service">Billing Service</option>
+          <option value="Payment Gateway">Payment Gateway</option>
+          <option value="Authentication Core">Authentication Core</option>
+          <option value="NovaSmart Platform" selected>NovaSmart Platform</option>
+          <option value="__new__">+ Create New Project...</option>
+        </select>
+
+        <label style="font-size:.85rem; font-weight:600; color:#5f6368;">Model:</label>
+        <select id="modelSelect">
+          <option value="gemini-2.5-flash" selected>Gemini 2.5 Flash</option>
+          <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
+          <option value="gemini-flash-latest">Gemini Flash Latest</option>
+        </select>
+      </div>
+    </header>
+
+    <div id="log"></div>
+
+    <form id="form">
+      <label for="fileInput" class="file-label" title="Upload PDF, Markdown, or doc file">
+        <span class="material-symbols-outlined" style="color:var(--accent);">attach_file</span> Attach
+      </label>
+      <input type="file" id="fileInput" accept=".md,.txt,.pdf,.json">
+      
+      <input id="input" type="text" placeholder="Ask about architecture, ADRs, team gotchas, or generate Confluence docs…" autocomplete="off" autofocus>
+      <button type="submit" class="btn-sm btn-accent">Send</button>
+    </form>
+  </main>
+</div>
+
+<script>
+const log = document.getElementById("log");
+const form = document.getElementById("form");
+const input = document.getElementById("input");
+const projectSelect = document.getElementById("projectSelect");
+const modelSelect = document.getElementById("modelSelect");
+const newChatBtn = document.getElementById("newChatBtn");
+const sessionListEl = document.getElementById("sessionList");
+const fileInput = document.getElementById("fileInput");
+
+// Sessions Storage Structure
+let sessions = JSON.parse(localStorage.getItem("tribal_sessions") || "[]");
+let activeSessionId = localStorage.getItem("tribal_active_session_id") || null;
+
+function saveSessions() {
+  localStorage.setItem("tribal_sessions", JSON.stringify(sessions));
+  localStorage.setItem("tribal_active_session_id", activeSessionId);
+}
+
+function generateId() {
+  return "s-" + Math.random().toString(36).substring(2, 10);
+}
+
+function createNewSession() {
+  const newId = generateId();
+  const newSession = {
+    id: newId,
+    title: "New Conversation",
+    project: projectSelect.value,
+    messages: []
+  };
+  sessions.unshift(newSession);
+  activeSessionId = newId;
+  saveSessions();
+  renderSessionList();
+  loadActiveSession();
+}
+
+function renameSession(id, e) {
+  if (e) e.stopPropagation();
+  const session = sessions.find(s => s.id === id);
+  if (!session) return;
+  const newTitle = prompt("Enter new title for this chat:", session.title);
+  if (newTitle && newTitle.trim()) {
+    session.title = newTitle.trim();
+    saveSessions();
+    renderSessionList();
+  }
+}
+
+function deleteSession(id, e) {
+  if (e) e.stopPropagation();
+  if (!confirm("Are you sure you want to delete this chat session?")) return;
+  sessions = sessions.filter(s => s.id !== id);
+  if (activeSessionId === id) {
+    activeSessionId = sessions.length ? sessions[0].id : null;
+  }
+  saveSessions();
+  if (!activeSessionId) {
+    createNewSession();
+  } else {
+    renderSessionList();
+    loadActiveSession();
+  }
+}
+
+function selectSession(id) {
+  activeSessionId = id;
+  saveSessions();
+  renderSessionList();
+  loadActiveSession();
+}
+
+function renderSessionList() {
+  sessionListEl.innerHTML = "";
+  for (const s of sessions) {
+    const item = document.createElement("div");
+    item.className = "session-item" + (s.id === activeSessionId ? " active" : "");
+    item.onclick = () => selectSession(s.id);
+
+    const titleSpan = document.createElement("span");
+    titleSpan.className = "session-title";
+    titleSpan.textContent = s.title;
+
+    const actions = document.createElement("div");
+    actions.className = "session-actions";
+
+    const editBtn = document.createElement("button");
+    editBtn.className = "icon-btn";
+    editBtn.title = "Rename Chat";
+    editBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size:1rem;">edit</span>';
+    editBtn.onclick = (ev) => renameSession(s.id, ev);
+
+    const delBtn = document.createElement("button");
+    delBtn.className = "icon-btn";
+    delBtn.title = "Delete Chat";
+    delBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size:1rem;">delete</span>';
+    delBtn.onclick = (ev) => deleteSession(s.id, ev);
+
+    actions.appendChild(editBtn);
+    actions.appendChild(delBtn);
+
+    item.appendChild(titleSpan);
+    item.appendChild(actions);
+    sessionListEl.appendChild(item);
+  }
+}
+
+function getActiveSession() {
+  if (!activeSessionId || !sessions.find(s => s.id === activeSessionId)) {
+    if (!sessions.length) createNewSession();
+    else activeSessionId = sessions[0].id;
+  }
+  return sessions.find(s => s.id === activeSessionId);
+}
+
+function loadActiveSession() {
+  const current = getActiveSession();
+  log.innerHTML = "";
+  if (current.project) projectSelect.value = current.project;
+
+  if (current.messages.length === 0) {
+    const b = bubble("agent");
+    b.textContent = `👋 Welcome to Tribal KT Platform! Ask questions about architecture, ADRs, team gotchas, or generate Confluence docs for '${projectSelect.value}'.`;
+    return;
+  }
+  for (const item of current.messages) {
+    const b = bubble(item.who);
+    if (item.who === "user") {
+      b.textContent = item.text;
+    } else {
+      renderReply(b, item.parts || []);
+    }
+  }
+}
+
+function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+function bubble(who) {
+  const m = el("div", "msg " + who);
+  const b = el("div", "bubble");
+  m.appendChild(b); log.appendChild(m); log.scrollTop = log.scrollHeight;
+  return b;
+}
+
+newChatBtn.addEventListener("click", () => {
+  createNewSession();
+});
+
+projectSelect.addEventListener("change", () => {
+  if (projectSelect.value === "__new__") {
+    const name = prompt("Enter new project name:");
+    if (name && name.trim()) {
+      const opt = document.createElement("option");
+      opt.value = name.trim();
+      opt.textContent = name.trim();
+      opt.selected = true;
+      projectSelect.insertBefore(opt, projectSelect.lastElementChild);
+    } else {
+      projectSelect.value = "NovaSmart Platform";
+    }
+  }
+  const curr = getActiveSession();
+  if (curr) {
+    curr.project = projectSelect.value;
+    saveSessions();
+  }
+});
+
+fileInput.addEventListener("change", async () => {
+  if (!fileInput.files.length) return;
+  const file = fileInput.files[0];
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const uBubble = bubble("user");
+  uBubble.textContent = `📎 Uploading document: ${file.name}...`;
+  const aBubble = bubble("agent"); aBubble.textContent = "…";
+
+  try {
+    const res = await fetch("/upload", { method: "POST", body: formData });
+    const data = await res.json();
+    if (data.status === "success") {
+      const promptText = `Ingest uploaded document '${data.filename}' into project '${projectSelect.value}'. Document Public Link: ${data.public_url}`;
+      input.value = promptText;
+      form.dispatchEvent(new Event("submit"));
+    } else {
+      aBubble.textContent = "Upload failed: " + data.message;
+    }
+  } catch (e) {
+    aBubble.textContent = "Upload error: " + e.message;
+  }
+  fileInput.value = "";
+});
+
+/* ----------------------------------------------------------------------------
+ * A2UI mini-renderer (v0.8 Basic Catalog subset).
+ * -------------------------------------------------------------------------- */
+function boundStr(v) {
+  if (v == null) return "";
+  if (typeof v === "string") return v;
+  if (typeof v.literalString === "string") return v.literalString;
+  return "";
+}
+
+function childIds(props) {
+  const ids = [];
+  if (props && typeof props.child === "string") ids.push(props.child);
+  const ch = props && props.children;
+  if (ch && Array.isArray(ch.explicitList)) for (const c of ch.explicitList) if (typeof c === "string") ids.push(c);
+  return ids;
+}
+
+function iconName(n) { return String(n || "").replace(/([a-z0-9])([A-Z])/g, "$1_$2").replace(/\s+/g, "_").toLowerCase(); }
+
+function buildNode(id, comps, seen) {
+  if (!id || seen.has(id)) return null;
+  seen.add(id);
+  const spec = comps[id];
+  if (!spec || typeof spec !== "object") return null;
+  const type = Object.keys(spec)[0];
+  const props = spec[type] || {};
+  const kids = () => childIds(props).map(cid => buildNode(cid, comps, seen)).filter(Boolean);
+
+  switch (type) {
+    case "Card": {
+      const d = el("div", "a2card"); kids().forEach(n => d.appendChild(n)); return d;
+    }
+    case "Column":
+    case "List": {
+      const horizontal = type === "List" && props.direction === "horizontal";
+      const d = el("div", horizontal ? "a2row" : "a2col"); kids().forEach(n => d.appendChild(n)); return d;
+    }
+    case "Row": {
+      const d = el("div", "a2row" + (props.distribution === "spaceBetween" ? " between" : ""));
+      kids().forEach(n => d.appendChild(n)); return d;
+    }
+    case "Text": {
+      const t = el("div", "a2text");
+      const hint = String(props.usageHint || "body").toLowerCase();
+      if (["h1", "h2", "h3", "h4", "h5", "h6"].includes(hint)) t.classList.add("a2-" + hint);
+      else if (hint === "caption") t.classList.add("a2-caption");
+      t.textContent = boundStr(props.text);
+      return t;
+    }
+    case "Divider":
+      return el("hr", "a2divider");
+    case "Image": {
+      const src = boundStr(props.url || props.src);
+      if (!/^https?:\/\//i.test(src)) return null;
+      const img = el("img", "a2img"); img.src = src; img.alt = boundStr(props.alt) || ""; return img;
+    }
+    case "Icon": {
+      const s = el("span", "material-symbols-outlined"); s.textContent = iconName(boundStr(props.name) || props.name); return s;
+    }
+    default:
+      return null;
+  }
+}
+
+function renderSurface(messages, container) {
+  const comps = {};
+  const roots = [];
+  for (const m of messages) {
+    if (m.beginRendering && typeof m.beginRendering.root === "string") roots.push(m.beginRendering.root);
+    const su = m.surfaceUpdate;
+    if (su && Array.isArray(su.components)) for (const c of su.components) if (c && c.id && c.component) comps[c.id] = c.component;
+  }
+  let rootIds = roots.filter(r => comps[r]);
+  if (rootIds.length === 0) {
+    const referenced = new Set();
+    for (const id in comps) { const spec = comps[id]; childIds(spec[Object.keys(spec)[0]] || {}).forEach(c => referenced.add(c)); }
+    rootIds = Object.keys(comps).filter(id => !referenced.has(id));
+  }
+  let drew = false;
+  for (const rid of rootIds) { const node = buildNode(rid, comps, new Set()); if (node) { container.appendChild(node); drew = true; } }
+  return drew;
+}
+
+function flattenText(messages) {
+  const out = [];
+  for (const m of messages) {
+    const su = m.surfaceUpdate;
+    if (su && Array.isArray(su.components)) for (const c of su.components) if (c && c.component && c.component.Text) out.push(boundStr(c.component.Text.text));
+  }
+  return out.join("\n").trim();
+}
+
+function renderReply(b, parts) {
+  b.textContent = "";
+  const texts = parts.filter(p => p && (p.kind === "text" || (!p.kind && p.text))).map(p => p.text || "");
+  const a2ui = parts.filter(p => p && p.kind === "a2ui" && p.data).map(p => p.data);
+
+  const textStr = texts.join("\n").trim();
+  if (textStr) b.appendChild(el("div", null, textStr));
+
+  if (a2ui.length) {
+    b.classList.add("rich");
+    if (!renderSurface(a2ui, b)) b.appendChild(el("div", null, flattenText(a2ui) || "(no card content)"));
+  }
+  if (!b.childNodes.length) b.textContent = "(no response)";
+  log.scrollTop = log.scrollHeight;
+}
+
+form.addEventListener("submit", async (ev) => {
+  ev.preventDefault();
+  const text = input.value.trim();
+  if (!text) return;
+  
+  const currentSession = getActiveSession();
+
+  // Auto-title session if it's new
+  if (currentSession.title === "New Conversation" && currentSession.messages.length === 0) {
+    currentSession.title = text.length > 25 ? text.substring(0, 25) + "…" : text;
+    renderSessionList();
+  }
+
+  bubble("user").textContent = text;
+  currentSession.messages.push({ who: "user", text: text });
+  saveSessions();
+
+  input.value = "";
+  const b = bubble("agent"); b.textContent = "…";
+  
+  try {
+    const res = await fetch("/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message: text,
+        project_name: projectSelect.value,
+        model_name: modelSelect.value,
+        user_id: "user-session-" + currentSession.id
+      })
+    });
+    const raw = await res.text();
+    let data;
+    try { data = JSON.parse(raw); }
+    catch { throw new Error(`Server returned non-JSON (HTTP ${res.status}). ${raw.slice(0, 300)}`); }
+    
+    renderReply(b, data.parts || []);
+    currentSession.messages.push({ who: "agent", parts: data.parts || [] });
+    saveSessions();
+
+  } catch (e) {
+    b.textContent = "Error: " + e.message;
+  }
+});
+
+// Initial Setup
+if (!sessions.length) {
+  createNewSession();
+} else {
+  renderSessionList();
+  loadActiveSession();
+}
+</script>
+</body>
+</html>

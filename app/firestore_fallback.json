@@ -1,0 +1,58 @@
+{
+  "adr_001_session_caching": {
+    "id": "adr_001_session_caching",
+    "title": "ADR-001: Session Caching Strategy (Redis vs Memcached)",
+    "category": "Architecture Decision",
+    "owner": "Bob Johnson (@bob_sec)",
+    "content": "Standardized on Redis over Memcached for user session storage because Memcached lacks persistence and pub/sub. Redis AOF persistence prevents session data loss across container restarts, and Redis pub/sub enables instant global token revocation.",
+    "tags": [
+      "redis",
+      "caching",
+      "sessions",
+      "architecture"
+    ],
+    "updated_at": "2026-09-22T12:57:43.486558+00:00"
+  },
+  "adr_002_payment_database": {
+    "id": "adr_002_payment_database",
+    "title": "ADR-002: Primary Database for Payment Transactions",
+    "category": "Architecture Decision",
+    "owner": "Alice Smith (@alice_dev)",
+    "content": "Selected PostgreSQL with strict ACID compliance and row-level locking for the Payment ledger service to prevent double-billing and billing race conditions under high concurrency.",
+    "tags": [
+      "database",
+      "postgres",
+      "payments",
+      "acid"
+    ],
+    "updated_at": "2026-09-22T12:57:43.486572+00:00"
+  },
+  "gotcha_001_agent_platform_project_id": {
+    "id": "gotcha_001_agent_platform_project_id",
+    "title": "Operational Gotcha: Agent Platform Project ID vs Project Number",
+    "category": "Operational Gotcha",
+    "owner": "Dave Miller (@dave_ops)",
+    "content": "On Agent Platform / Cloud Run, GOOGLE_CLOUD_PROJECT returns the numeric project number (e.g., 898315975450). Firestore Client(project=...) requires the alphanumeric project ID ('qwiklabs-gcp-02-3932e9061bcb'). Always hardcode or pass the alphanumeric project ID string.",
+    "tags": [
+      "agent-platform",
+      "firestore",
+      "gotcha",
+      "gcp"
+    ],
+    "updated_at": "2026-09-22T12:57:43.486575+00:00"
+  },
+  "ownership_001_auth_service": {
+    "id": "ownership_001_auth_service",
+    "title": "Component Ownership: Authentication & Security Service",
+    "category": "Component Ownership",
+    "owner": "Bob Johnson (@bob_sec)",
+    "content": "Maintained by Bob Johnson. Handles OAuth 2.0, JWT token generation, and role-based access control. On-call escalation channel: #auth-sec-oncall.",
+    "tags": [
+      "auth",
+      "security",
+      "ownership",
+      "jwt"
+    ],
+    "updated_at": "2026-09-22T12:57:43.486577+00:00"
+  }
+}
