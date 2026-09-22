@@ -132,7 +132,8 @@ a2ui_instruction = schema_manager.generate_system_prompt(
         "You may include one Image component when you have a public https URL for the image (such as the diagram_url returned by generate_architecture_diagram). "
         "Set the Image url to that exact https link. Never point an Image at a bare filename. "
         "No markdown in text; use usageHint ('h1', 'h2', 'body') for headings. "
-        "Output ONLY the raw A2UI JSON array when returning UI."
+        "Output ONLY the raw A2UI JSON array when returning UI. "
+        "SPEED GUIDANCE: Select the single most relevant tool directly and answer immediately without chaining unnecessary tool calls."
     ),
     include_schema=True,
     include_examples=True,

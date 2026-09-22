@@ -3,12 +3,12 @@
   "deployment_target": "agent_runtime",
   "is_a2a": true,
   "agent_directory": "app",
-  "deployment_timestamp": "2026-09-22T14:36:22.957446+00:00",
+  "deployment_timestamp": "2026-09-22T14:39:37.886522+00:00",
   "pending_operation": {
-    "operation_name": "projects/898315975450/locations/us-central1/reasoningEngines/8017484308358889472/operations/7148632271421964288",
+    "operation_name": "projects/898315975450/locations/us-central1/reasoningEngines/8017484308358889472/operations/8465231474986057728",
     "project": "qwiklabs-gcp-02-3932e9061bcb",
     "location": "us-central1",
     "deployment_target": "agent_runtime",
-    "started_at": "2026-09-22T14:36:23.462596+00:00"
+    "started_at": "2026-09-22T14:39:52.965642+00:00"
   }
 }
