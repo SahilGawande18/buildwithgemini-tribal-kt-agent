@@ -32,7 +32,7 @@
 
   /* Navigation Tabs in Sidebar Bottom */
   .nav-menu { border-top:1px solid #262626; padding:.5rem; display:flex; flex-direction:column; gap:.3rem; }
-  .nav-btn { background:transparent; color:#a1a1a1; border:none; padding:.65rem .8rem; border-radius:8px; font-size:.88rem; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:.6rem; text-align:left; transition:all .15s; }
+  .nav-btn { background:transparent; color:#a1a1a1; border:none; padding:.6rem .8rem; border-radius:8px; font-size:.85rem; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:.6rem; text-align:left; transition:all .15s; }
   .nav-btn:hover { background:var(--sidebar-hover); color:#fff; }
   .nav-btn.active { background:var(--accent); color:#fff; }
 
@@ -56,11 +56,6 @@
   .bubble { display:inline-block; padding:.75rem 1.1rem; border-radius:12px; background:#fff; border:1px solid var(--border); text-align:left; max-width:88%; white-space:pre-wrap; line-height:1.45; box-shadow:0 1px 2px rgba(0,0,0,.04); }
   .msg.user .bubble { background:var(--accent); color:#fff; border:none; }
   .bubble.rich { background:transparent; border:none; padding:0; max-width:100%; white-space:normal; box-shadow:none; }
-  
-  .quick-bar { display:flex; gap:.5rem; padding:.5rem 1.2rem 0; max-width:860px; width:100%; margin:0 auto; overflow-x:auto; }
-  .pill-btn { background:#fff; border:1px solid var(--border); padding:.4rem .8rem; border-radius:20px; font-size:.82rem; font-weight:500; color:#3c4043; cursor:pointer; display:flex; align-items:center; gap:.4rem; white-space:nowrap; transition:all .15s; }
-  .pill-btn:hover { background:#f1f3f4; border-color:#dadce0; color:var(--accent); }
-  .pill-btn .material-symbols-outlined { font-size:1.05rem; color:var(--accent); }
 
   form#form { display:flex; gap:.5rem; padding:.8rem 1.2rem 1rem; border-top:1px solid var(--border); background:#fff; max-width:860px; width:100%; margin:0 auto; align-items:center; }
   input[type="text"] { flex:1; padding:.75rem 1rem; border:1px solid var(--border); border-radius:8px; font-size:.95rem; }
@@ -69,7 +64,7 @@
   .file-label { padding:.75rem 1rem; border:1px solid var(--border); border-radius:8px; background:#f1f3f4; cursor:pointer; display:flex; align-items:center; gap:.4rem; font-weight:500; font-size:.9rem; }
   .file-label:hover { background:#e8eaed; }
 
-  /* --- Studio & Project Workspaces --- */
+  /* --- Workspaces --- */
   .studio-container { flex:1; overflow-y:auto; padding:1.5rem; max-width:960px; width:100%; margin:0 auto; display:flex; flex-direction:column; gap:1.2rem; }
   .studio-card { background:#fff; border:1px solid var(--border); border-radius:12px; padding:1.2rem; box-shadow:0 1px 3px rgba(0,0,0,.05); display:flex; flex-direction:column; gap:1rem; }
   .form-group { display:flex; flex-direction:column; gap:.4rem; }
@@ -79,6 +74,7 @@
 
   .doc-preview-box { background:#1e1e1e; color:#d4d4d4; padding:1rem; border-radius:8px; font-family:monospace; font-size:.88rem; white-space:pre-wrap; max-height:350px; overflow-y:auto; border:1px solid #333; }
   .action-row { display:flex; gap:.8rem; flex-wrap:wrap; align-items:center; }
+  .tool-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
 
   /* Modal Dialog */
   .modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:1000; align-items:center; justify-content:center; }
@@ -118,10 +114,13 @@
     <!-- Navigation Studio Switcher -->
     <div class="nav-menu">
       <button class="nav-btn active" id="navChatBtn" onclick="switchView('chat')">
-        <span class="material-symbols-outlined">chat</span> AI Chat Studio
+        <span class="material-symbols-outlined">chat</span> Agent Q&A Studio
       </button>
       <button class="nav-btn" id="navProjectBtn" onclick="switchView('projects')">
-        <span class="material-symbols-outlined">create_new_folder</span> Projects & Ingestion
+        <span class="material-symbols-outlined">create_new_folder</span> Create & Ingest Project
+      </button>
+      <button class="nav-btn" id="navToolsBtn" onclick="switchView('tools')">
+        <span class="material-symbols-outlined">construction</span> Advanced Agent Tools
       </button>
       <button class="nav-btn" id="navStudioBtn" onclick="switchView('studio')">
         <span class="material-symbols-outlined">description</span> Confluence & Doc Studio
@@ -153,41 +152,22 @@
       </div>
     </header>
 
-    <!-- VIEW 1: AI Chat Studio (ChatGPT Mode) -->
+    <!-- VIEW 1: Agent Q&A Studio (Clean ChatGPT Window) -->
     <div id="chatView" class="view-pane active">
       <div id="log"></div>
 
-      <!-- Quick Action Pills -->
-      <div class="quick-bar">
-        <button class="pill-btn" onclick="quickAction('analytics')">
-          <span class="material-symbols-outlined">analytics</span> Knowledge Analytics
-        </button>
-        <button class="pill-btn" onclick="quickAction('quiz')">
-          <span class="material-symbols-outlined">quiz</span> Take Onboarding Quiz
-        </button>
-        <button class="pill-btn" onclick="quickAction('audit')">
-          <span class="material-symbols-outlined">security</span> Audit Code Compliance
-        </button>
-        <button class="pill-btn" onclick="quickAction('confluence')">
-          <span class="material-symbols-outlined">description</span> Generate Confluence Doc
-        </button>
-        <button class="pill-btn" onclick="quickAction('diagram')">
-          <span class="material-symbols-outlined">schema</span> Generate System Diagram
-        </button>
-      </div>
-
       <form id="form">
-        <label for="fileInput" class="file-label" title="Upload PDF, Markdown, or doc file">
+        <label for="fileInput" class="file-label" title="Attach file to chat">
           <span class="material-symbols-outlined" style="color:var(--accent);">attach_file</span> Attach
         </label>
         <input type="file" id="fileInput" accept=".md,.txt,.pdf,.json">
         
-        <input id="input" type="text" placeholder="Discuss architecture, finalize docs, or plan next steps with AI..." autocomplete="off" autofocus>
+        <input id="input" type="text" placeholder="Ask any question about architecture, gotchas, ADRs, or code..." autocomplete="off" autofocus>
         <button type="submit" class="btn-sm btn-accent">Send</button>
       </form>
     </div>
 
-    <!-- VIEW 2: Dedicated Projects & Knowledge Ingestion Workspace -->
+    <!-- VIEW 2: Create & Ingest Project Workspace -->
     <div id="projectsView" class="view-pane">
       <div class="studio-container">
         <div class="studio-card">
@@ -195,17 +175,17 @@
             <span class="material-symbols-outlined">create_new_folder</span> Dedicated Project Creation & Knowledge Ingestion Workspace
           </div>
           <p style="margin:0; font-size:.88rem; color:#5f6368;">
-            Create a new project, upload project-specific files (PDFs, Markdown, Specs), and attach GitHub Repository links to ingest knowledge into the platform.
+            Create a new project from scratch, attach GitHub repositories, and upload local documents (PDFs, Markdown specs) to build a unified knowledge base.
           </p>
 
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
             <div class="form-group">
-              <label>Project Title / Identifier:</label>
+              <label>Project Name / Title:</label>
               <input type="text" id="newProjectTitleInput" class="input-sm" style="padding:.65rem 1rem;" placeholder="e.g. Payment Gateway Core">
             </div>
 
             <div class="form-group">
-              <label>Preferred AI Model for Project Analysis:</label>
+              <label>AI Reasoning Model:</label>
               <select id="projectModelSelect">
                 <option value="gemini-2.5-flash" selected>Gemini 2.5 Flash</option>
                 <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
@@ -215,28 +195,28 @@
           </div>
 
           <div class="form-group">
-            <label>Link GitHub Repository URL (Optional):</label>
+            <label>🐙 Link GitHub Repository URL:</label>
             <input type="text" id="githubRepoUrlInput" class="input-sm" style="padding:.65rem 1rem;" placeholder="e.g. https://github.com/SahilGawande18/buildwithgemini-tribal-kt-agent">
           </div>
 
           <div class="form-group">
-            <label>Upload Project Files (PDF, Markdown, Specs):</label>
+            <label>📄 Upload Local Documents (PDF, Markdown, Specs):</label>
             <input type="file" id="projectFileInput" class="input-sm" style="padding:.5rem;" accept=".pdf,.md,.txt,.json">
           </div>
 
           <div class="form-group">
-            <label>Initial Project Overview / Scope Note:</label>
-            <textarea id="projectScopeNote" placeholder="Describe the purpose of this project, target maintainers, or key architecture requirements..."></textarea>
+            <label>Project Scope / Initial Architectural Note:</label>
+            <textarea id="projectScopeNote" placeholder="Describe microservice architecture requirements, maintainers, or key technical goals..."></textarea>
           </div>
 
           <button type="button" class="btn-sm btn-accent" style="padding:.7rem 1.2rem; font-weight:600; width:fit-content;" onclick="createNewProjectWorkspace()">
-            📁 Create & Initialize Project Workspace
+            📁 Create & Ingest Project Workspace
           </button>
         </div>
 
         <div class="studio-card">
           <div style="font-size:1rem; font-weight:700; color:#202124;">
-            📋 Ingested Project Repositories & Knowledge Base
+            📋 Ingested Project Repositories & Knowledge Base Status
           </div>
           <div id="projectIngestionStatus" style="font-size:.88rem; color:#5f6368;">
             Select a project from the header to view its ingested GitHub repos, uploaded PDFs, and Confluence spaces.
@@ -245,7 +225,36 @@
       </div>
     </div>
 
-    <!-- VIEW 3: Dedicated Confluence & Doc Studio -->
+    <!-- VIEW 3: Advanced Agent Tools Workspace -->
+    <div id="toolsView" class="view-pane">
+      <div class="studio-container">
+        <div class="studio-card">
+          <div style="font-size:1.1rem; font-weight:700; color:var(--accent); display:flex; align-items:center; gap:.5rem;">
+            <span class="material-symbols-outlined">construction</span> Dedicated Engineering Tools Workspace
+          </div>
+          <p style="margin:0; font-size:.88rem; color:#5f6368;">
+            Run automated security audits, generate onboarding quizzes, analyze knowledge health metrics, and render system architecture diagrams.
+          </p>
+
+          <div class="tool-grid">
+            <button class="pill-btn" style="padding:.8rem 1rem; border-radius:8px; justify-content:center; font-size:.9rem;" onclick="runToolFromWorkspace('analytics')">
+              <span class="material-symbols-outlined">analytics</span> 📊 Knowledge Health Analytics
+            </button>
+            <button class="pill-btn" style="padding:.8rem 1rem; border-radius:8px; justify-content:center; font-size:.9rem;" onclick="runToolFromWorkspace('quiz')">
+              <span class="material-symbols-outlined">quiz</span> 📝 Onboarding Quiz Generator
+            </button>
+            <button class="pill-btn" style="padding:.8rem 1rem; border-radius:8px; justify-content:center; font-size:.9rem;" onclick="runToolFromWorkspace('audit')">
+              <span class="material-symbols-outlined">security</span> 🛡️ Code Compliance Scanner
+            </button>
+            <button class="pill-btn" style="padding:.8rem 1rem; border-radius:8px; justify-content:center; font-size:.9rem;" onclick="runToolFromWorkspace('diagram')">
+              <span class="material-symbols-outlined">schema</span> 📐 Architecture Visual Renderer
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 4: Confluence & Document Studio -->
     <div id="studioView" class="view-pane">
       <div class="studio-container">
         <div class="studio-card">
@@ -360,10 +369,12 @@ const fileInput = document.getElementById("fileInput");
 
 const chatView = document.getElementById("chatView");
 const projectsView = document.getElementById("projectsView");
+const toolsView = document.getElementById("toolsView");
 const studioView = document.getElementById("studioView");
 
 const navChatBtn = document.getElementById("navChatBtn");
 const navProjectBtn = document.getElementById("navProjectBtn");
+const navToolsBtn = document.getElementById("navToolsBtn");
 const navStudioBtn = document.getElementById("navStudioBtn");
 
 let generatedDocContent = "";
@@ -372,10 +383,12 @@ let generatedDocTitle = "";
 function switchView(view) {
   chatView.classList.remove("active");
   projectsView.classList.remove("active");
+  toolsView.classList.remove("active");
   studioView.classList.remove("active");
 
   navChatBtn.classList.remove("active");
   navProjectBtn.classList.remove("active");
+  navToolsBtn.classList.remove("active");
   navStudioBtn.classList.remove("active");
 
   if (view === "chat") {
@@ -384,10 +397,28 @@ function switchView(view) {
   } else if (view === "projects") {
     projectsView.classList.add("active");
     navProjectBtn.classList.add("active");
+  } else if (view === "tools") {
+    toolsView.classList.add("active");
+    navToolsBtn.classList.add("active");
   } else if (view === "studio") {
     studioView.classList.add("active");
     navStudioBtn.classList.add("active");
   }
+}
+
+function runToolFromWorkspace(type) {
+  switchView('chat');
+  const proj = projectSelect.value;
+  if (type === "analytics") {
+    input.value = `Generate knowledge analytics and documentation metrics for project '${proj}'`;
+  } else if (type === "quiz") {
+    input.value = `Generate an interactive technical onboarding quiz for project '${proj}'`;
+  } else if (type === "audit") {
+    input.value = `Audit codebase compliance for project '${proj}' with code:\n\nfrom google.cloud import firestore\ndb = firestore.Client()`;
+  } else if (type === "diagram") {
+    input.value = `Generate an architecture diagram for project '${proj}' showing API Gateway, microservice core, and Firestore storage`;
+  }
+  form.dispatchEvent(new Event("submit"));
 }
 
 // Create New Project in Workspace
@@ -561,22 +592,6 @@ function loadActiveSession() {
       renderReply(b, item.parts || []);
     }
   }
-}
-
-function quickAction(type) {
-  const proj = projectSelect.value;
-  if (type === "analytics") {
-    input.value = `Generate knowledge analytics and documentation metrics for project '${proj}'`;
-  } else if (type === "quiz") {
-    input.value = `Generate an interactive technical onboarding quiz for project '${proj}'`;
-  } else if (type === "audit") {
-    input.value = `Audit codebase compliance for project '${proj}' with code:\n\nfrom google.cloud import firestore\ndb = firestore.Client()`;
-  } else if (type === "confluence") {
-    input.value = `Generate a Confluence wiki page for project '${proj}' titled 'Architecture Overview & Guidelines'`;
-  } else if (type === "diagram") {
-    input.value = `Generate an architecture diagram for project '${proj}' showing API Gateway, microservice core, and Firestore storage`;
-  }
-  form.dispatchEvent(new Event("submit"));
 }
 
 /* Dedicated Confluence Studio Functions */
