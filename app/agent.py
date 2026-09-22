@@ -38,6 +38,8 @@ from app.external_api_tools import (
 from app.rag_service import consult_reference_docs
 from app.image_gen_tool import generate_architecture_diagram
 from app.doc_generator_tool import generate_synthetic_confluence_doc
+from app.code_auditor_tool import audit_codebase_compliance
+from app.quiz_generator_tool import generate_onboarding_quiz
 
 logger = logging.getLogger(__name__)
 
@@ -157,6 +159,8 @@ root_agent = Agent(
         consult_reference_docs,
         generate_architecture_diagram,
         generate_synthetic_confluence_doc,
+        audit_codebase_compliance,
+        generate_onboarding_quiz,
     ],
     after_model_callback=a2ui_callback,
     after_agent_callback=generate_memories_callback,

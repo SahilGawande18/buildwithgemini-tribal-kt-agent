@@ -47,7 +47,13 @@
   .msg.user .bubble { background:var(--accent); color:#fff; border:none; }
   .bubble.rich { background:transparent; border:none; padding:0; max-width:100%; white-space:normal; box-shadow:none; }
   
-  form { display:flex; gap:.5rem; padding:1rem 1.2rem; border-top:1px solid var(--border); background:#fff; max-width:860px; width:100%; margin:0 auto; align-items:center; }
+  /* --- Quick Actions Toolbar --- */
+  .quick-bar { display:flex; gap:.5rem; padding:.5rem 1.2rem 0; max-width:860px; width:100%; margin:0 auto; overflow-x:auto; }
+  .pill-btn { background:#fff; border:1px solid var(--border); padding:.4rem .8rem; border-radius:20px; font-size:.82rem; font-weight:500; color:#3c4043; cursor:pointer; display:flex; align-items:center; gap:.4rem; white-space:nowrap; transition:all .15s; }
+  .pill-btn:hover { background:#f1f3f4; border-color:#dadce0; color:var(--accent); }
+  .pill-btn .material-symbols-outlined { font-size:1.05rem; color:var(--accent); }
+
+  form { display:flex; gap:.5rem; padding:.8rem 1.2rem 1rem; border-top:1px solid var(--border); background:#fff; max-width:860px; width:100%; margin:0 auto; align-items:center; }
   input[type="text"] { flex:1; padding:.75rem 1rem; border:1px solid var(--border); border-radius:8px; font-size:.95rem; }
   input[type="text"]:focus { border-color:var(--accent); outline:none; }
   input[type="file"] { display:none; }
@@ -112,13 +118,29 @@
 
     <div id="log"></div>
 
+    <!-- Quick Action Pills -->
+    <div class="quick-bar">
+      <button class="pill-btn" onclick="quickAction('quiz')">
+        <span class="material-symbols-outlined">quiz</span> Take Onboarding Quiz
+      </button>
+      <button class="pill-btn" onclick="quickAction('audit')">
+        <span class="material-symbols-outlined">security</span> Audit Code Compliance
+      </button>
+      <button class="pill-btn" onclick="quickAction('confluence')">
+        <span class="material-symbols-outlined">description</span> Generate Confluence Doc
+      </button>
+      <button class="pill-btn" onclick="quickAction('diagram')">
+        <span class="material-symbols-outlined">schema</span> Generate System Diagram
+      </button>
+    </div>
+
     <form id="form">
       <label for="fileInput" class="file-label" title="Upload PDF, Markdown, or doc file">
         <span class="material-symbols-outlined" style="color:var(--accent);">attach_file</span> Attach
       </label>
       <input type="file" id="fileInput" accept=".md,.txt,.pdf,.json">
       
-      <input id="input" type="text" placeholder="Ask about architecture, ADRs, team gotchas, or generate Confluence docs…" autocomplete="off" autofocus>
+      <input id="input" type="text" placeholder="Ask about architecture, ADRs, team gotchas, audit code, or take quizzes…" autocomplete="off" autofocus>
       <button type="submit" class="btn-sm btn-accent">Send</button>
     </form>
   </main>
@@ -247,7 +269,7 @@ function loadActiveSession() {
 
   if (current.messages.length === 0) {
     const b = bubble("agent");
-    b.textContent = `👋 Welcome to Tribal KT Platform! Ask questions about architecture, ADRs, team gotchas, or generate Confluence docs for '${projectSelect.value}'.`;
+    b.textContent = `👋 Welcome to Tribal KT Platform! Ask questions, audit codebase compliance, take onboarding quizzes, or generate Confluence docs for '${projectSelect.value}'.`;
     return;
   }
   for (const item of current.messages) {
@@ -258,6 +280,20 @@ function loadActiveSession() {
       renderReply(b, item.parts || []);
     }
   }
+}
+
+function quickAction(type) {
+  const proj = projectSelect.value;
+  if (type === "quiz") {
+    input.value = `Generate an interactive technical onboarding quiz for project '${proj}'`;
+  } else if (type === "audit") {
+    input.value = `Audit codebase compliance for project '${proj}' with code:\n\nfrom google.cloud import firestore\ndb = firestore.Client()`;
+  } else if (type === "confluence") {
+    input.value = `Generate a Confluence wiki page for project '${proj}' titled 'Architecture Overview & Guidelines'`;
+  } else if (type === "diagram") {
+    input.value = `Generate an architecture diagram for project '${proj}' showing API Gateway, microservice core, and Firestore storage`;
+  }
+  form.dispatchEvent(new Event("submit"));
 }
 
 function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
