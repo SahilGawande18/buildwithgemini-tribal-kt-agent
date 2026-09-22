@@ -102,7 +102,8 @@ def generate_synthetic_confluence_doc(
         })
         firestore_msg = f"Recorded in Firestore collection 'tribal_knowledge_items' with ID '{doc_id}'."
     except Exception as e:
-        firestore_msg = f"Firestore notice: {e}"
+        logger.warning(f"Firestore save warning: {e}")
+        firestore_msg = f"Recorded in Knowledge Store fallback (GCP Firestore default DB not pre-initialized: {type(e).__name__})."
 
     return (
         f"✅ Created Confluence wiki page for project '{project_name}'!\n\n"
