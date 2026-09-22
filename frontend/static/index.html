@@ -30,16 +30,26 @@
   .icon-btn { background:none; border:none; color:#9b9b9b; cursor:pointer; padding:2px; border-radius:4px; display:flex; align-items:center; }
   .icon-btn:hover { color:#fff; background:#424242; }
 
-  /* --- Main Content & Chat Area --- */
+  /* Navigation Tabs in Sidebar Bottom */
+  .nav-menu { border-top:1px solid #262626; padding:.5rem; display:flex; flex-direction:column; gap:.3rem; }
+  .nav-btn { background:transparent; color:#a1a1a1; border:none; padding:.6rem .8rem; border-radius:8px; font-size:.88rem; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:.6rem; text-align:left; transition:all .15s; }
+  .nav-btn:hover { background:var(--sidebar-hover); color:#fff; }
+  .nav-btn.active { background:var(--accent); color:#fff; }
+
+  /* --- Main Content & Views --- */
   #main-content { flex:1; display:flex; flex-direction:column; background:var(--bg); height:100vh; overflow:hidden; }
   header { background:#fff; border-bottom:1px solid var(--border); padding:.75rem 1.2rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:.8rem; }
   .brand { font-weight:700; font-size:1.15rem; color:var(--accent); display:flex; align-items:center; gap:.4rem; }
   .controls { display:flex; align-items:center; gap:.6rem; flex-wrap:wrap; }
-  select, button.btn-sm { padding:.45rem .75rem; border:1px solid var(--border); border-radius:6px; background:#fff; font-size:.88rem; font-weight:500; cursor:pointer; }
-  select:focus { border-color:var(--accent); outline:none; }
+  select, button.btn-sm, input.input-sm { padding:.45rem .75rem; border:1px solid var(--border); border-radius:6px; background:#fff; font-size:.88rem; font-weight:500; cursor:pointer; }
+  select:focus, input.input-sm:focus { border-color:var(--accent); outline:none; }
   button.btn-accent { background:var(--accent); color:#fff; border:none; }
   button.btn-accent:hover { background:#1557b0; }
 
+  .view-pane { flex:1; display:none; flex-direction:column; overflow:hidden; }
+  .view-pane.active { display:flex; }
+
+  /* --- Chat View --- */
   #log { flex:1; overflow-y:auto; padding:1.2rem; max-width:860px; width:100%; margin:0 auto; }
   .msg { margin:.75rem 0; }
   .msg.user { text-align:right; }
@@ -47,20 +57,35 @@
   .msg.user .bubble { background:var(--accent); color:#fff; border:none; }
   .bubble.rich { background:transparent; border:none; padding:0; max-width:100%; white-space:normal; box-shadow:none; }
   
-  /* --- Quick Actions Toolbar --- */
   .quick-bar { display:flex; gap:.5rem; padding:.5rem 1.2rem 0; max-width:860px; width:100%; margin:0 auto; overflow-x:auto; }
   .pill-btn { background:#fff; border:1px solid var(--border); padding:.4rem .8rem; border-radius:20px; font-size:.82rem; font-weight:500; color:#3c4043; cursor:pointer; display:flex; align-items:center; gap:.4rem; white-space:nowrap; transition:all .15s; }
   .pill-btn:hover { background:#f1f3f4; border-color:#dadce0; color:var(--accent); }
   .pill-btn .material-symbols-outlined { font-size:1.05rem; color:var(--accent); }
 
-  form { display:flex; gap:.5rem; padding:.8rem 1.2rem 1rem; border-top:1px solid var(--border); background:#fff; max-width:860px; width:100%; margin:0 auto; align-items:center; }
+  form#form { display:flex; gap:.5rem; padding:.8rem 1.2rem 1rem; border-top:1px solid var(--border); background:#fff; max-width:860px; width:100%; margin:0 auto; align-items:center; }
   input[type="text"] { flex:1; padding:.75rem 1rem; border:1px solid var(--border); border-radius:8px; font-size:.95rem; }
   input[type="text"]:focus { border-color:var(--accent); outline:none; }
   input[type="file"] { display:none; }
   .file-label { padding:.75rem 1rem; border:1px solid var(--border); border-radius:8px; background:#f1f3f4; cursor:pointer; display:flex; align-items:center; gap:.4rem; font-weight:500; font-size:.9rem; }
   .file-label:hover { background:#e8eaed; }
 
-  /* --- A2UI component styles --- */
+  /* --- Dedicated Confluence Studio View --- */
+  .studio-container { flex:1; overflow-y:auto; padding:1.5rem; max-width:960px; width:100%; margin:0 auto; display:flex; flex-direction:column; gap:1.2rem; }
+  .studio-card { background:#fff; border:1px solid var(--border); border-radius:12px; padding:1.2rem; box-shadow:0 1px 3px rgba(0,0,0,.05); display:flex; flex-direction:column; gap:1rem; }
+  .form-group { display:flex; flex-direction:column; gap:.4rem; }
+  .form-group label { font-size:.88rem; font-weight:600; color:#3c4043; }
+  textarea { padding:.75rem 1rem; border:1px solid var(--border); border-radius:8px; font-size:.92rem; font-family:inherit; min-height:100px; resize:vertical; }
+  textarea:focus { border-color:var(--accent); outline:none; }
+
+  .doc-preview-box { background:#1e1e1e; color:#d4d4d4; padding:1rem; border-radius:8px; font-family:monospace; font-size:.88rem; white-space:pre-wrap; max-height:350px; overflow-y:auto; border:1px solid #333; }
+  .action-row { display:flex; gap:.8rem; flex-wrap:wrap; align-items:center; }
+
+  /* Modal Dialog */
+  .modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:1000; align-items:center; justify-content:center; }
+  .modal.active { display:flex; }
+  .modal-content { background:#fff; border-radius:12px; padding:1.5rem; width:100%; max-width:500px; box-shadow:0 4px 12px rgba(0,0,0,.15); display:flex; flex-direction:column; gap:1rem; }
+
+  /* A2UI */
   .a2card { border:1px solid var(--border); border-radius:12px; padding:1.1rem; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.06); max-width:100%; }
   .a2card + .a2card, .a2col > .a2card { margin-top:.6rem; }
   .a2col { display:flex; flex-direction:column; gap:.4rem; }
@@ -89,6 +114,16 @@
     </div>
     <div class="session-section-title">Recent Conversations</div>
     <div id="sessionList"></div>
+
+    <!-- Navigation Studio Switcher -->
+    <div class="nav-menu">
+      <button class="nav-btn active" id="navChatBtn" onclick="switchView('chat')">
+        <span class="material-symbols-outlined">chat</span> AI Chat Studio
+      </button>
+      <button class="nav-btn" id="navStudioBtn" onclick="switchView('studio')">
+        <span class="material-symbols-outlined">description</span> Confluence & Doc Studio
+      </button>
+    </div>
   </aside>
 
   <!-- Right Main Content -->
@@ -116,37 +151,142 @@
       </div>
     </header>
 
-    <div id="log"></div>
+    <!-- VIEW 1: AI Chat Studio -->
+    <div id="chatView" class="view-pane active">
+      <div id="log"></div>
 
-    <!-- Quick Action Pills -->
-    <div class="quick-bar">
-      <button class="pill-btn" onclick="quickAction('analytics')">
-        <span class="material-symbols-outlined">analytics</span> Knowledge Analytics
-      </button>
-      <button class="pill-btn" onclick="quickAction('quiz')">
-        <span class="material-symbols-outlined">quiz</span> Take Onboarding Quiz
-      </button>
-      <button class="pill-btn" onclick="quickAction('audit')">
-        <span class="material-symbols-outlined">security</span> Audit Code Compliance
-      </button>
-      <button class="pill-btn" onclick="quickAction('confluence')">
-        <span class="material-symbols-outlined">description</span> Generate Confluence Doc
-      </button>
-      <button class="pill-btn" onclick="quickAction('diagram')">
-        <span class="material-symbols-outlined">schema</span> Generate System Diagram
-      </button>
+      <!-- Quick Action Pills -->
+      <div class="quick-bar">
+        <button class="pill-btn" onclick="quickAction('analytics')">
+          <span class="material-symbols-outlined">analytics</span> Knowledge Analytics
+        </button>
+        <button class="pill-btn" onclick="quickAction('quiz')">
+          <span class="material-symbols-outlined">quiz</span> Take Onboarding Quiz
+        </button>
+        <button class="pill-btn" onclick="quickAction('audit')">
+          <span class="material-symbols-outlined">security</span> Audit Code Compliance
+        </button>
+        <button class="pill-btn" onclick="quickAction('confluence')">
+          <span class="material-symbols-outlined">description</span> Generate Confluence Doc
+        </button>
+        <button class="pill-btn" onclick="quickAction('diagram')">
+          <span class="material-symbols-outlined">schema</span> Generate System Diagram
+        </button>
+      </div>
+
+      <form id="form">
+        <label for="fileInput" class="file-label" title="Upload PDF, Markdown, or doc file">
+          <span class="material-symbols-outlined" style="color:var(--accent);">attach_file</span> Attach
+        </label>
+        <input type="file" id="fileInput" accept=".md,.txt,.pdf,.json">
+        
+        <input id="input" type="text" placeholder="Ask about architecture, ADRs, team gotchas, audit code, or take quizzes…" autocomplete="off" autofocus>
+        <button type="submit" class="btn-sm btn-accent">Send</button>
+      </form>
     </div>
 
-    <form id="form">
-      <label for="fileInput" class="file-label" title="Upload PDF, Markdown, or doc file">
-        <span class="material-symbols-outlined" style="color:var(--accent);">attach_file</span> Attach
-      </label>
-      <input type="file" id="fileInput" accept=".md,.txt,.pdf,.json">
-      
-      <input id="input" type="text" placeholder="Ask about architecture, ADRs, team gotchas, audit code, or take quizzes…" autocomplete="off" autofocus>
-      <button type="submit" class="btn-sm btn-accent">Send</button>
-    </form>
+    <!-- VIEW 2: Dedicated Confluence & Doc Studio -->
+    <div id="studioView" class="view-pane">
+      <div class="studio-container">
+        <div class="studio-card">
+          <div style="font-size:1.1rem; font-weight:700; color:var(--accent); display:flex; align-items:center; gap:.5rem;">
+            <span class="material-symbols-outlined">description</span> Dedicated Confluence & Technical Doc Generator
+          </div>
+          <p style="margin:0; font-size:.88rem; color:#5f6368;">
+            Generate comprehensive Confluence space wiki pages or GitHub technical specifications for any new or existing project. Choose to download locally or push directly to Cloud Storage & Firestore.
+          </p>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+            <div class="form-group">
+              <label>Target Project Scope:</label>
+              <select id="studioProjectSelect">
+                <option value="Billing Service">Billing Service</option>
+                <option value="Payment Gateway">Payment Gateway</option>
+                <option value="Authentication Core">Authentication Core</option>
+                <option value="NovaSmart Platform" selected>NovaSmart Platform</option>
+                <option value="__new__">+ Create New Project...</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Document Type:</label>
+              <select id="docTypeSelect">
+                <option value="confluence" selected>Confluence Wiki Space Page</option>
+                <option value="github_md">GitHub Markdown Specification</option>
+                <option value="adr_record">Architecture Decision Record (ADR)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Document Title:</label>
+            <input type="text" id="docTitleInput" class="input-sm" style="padding:.65rem 1rem;" placeholder="e.g. Payment Gateway API & Redis Caching Specification">
+          </div>
+
+          <div class="form-group">
+            <label>Detailed Requirements / Topic Summary:</label>
+            <textarea id="docSummaryInput" placeholder="Specify architecture details, team maintainers, database choices, endpoints, or gotchas to include in the document..."></textarea>
+          </div>
+
+          <button type="button" class="btn-sm btn-accent" style="padding:.7rem 1.2rem; font-weight:600; width:fit-content;" onclick="generateStudioDoc()">
+            🚀 Generate Detailed Document
+          </button>
+        </div>
+
+        <!-- Generated Output Section -->
+        <div id="studioOutputCard" class="studio-card" style="display:none;">
+          <div style="font-size:1rem; font-weight:700; color:#202124; display:flex; align-items:center; justify-content:space-between;">
+            <span>📄 Generated Document Preview</span>
+            <span id="docStatusBadge" style="font-size:.8rem; background:#e6f4ea; color:#137333; padding:.2rem .6rem; border-radius:12px; font-weight:600;">DRAFT READY</span>
+          </div>
+
+          <div id="docPreview" class="doc-preview-box"></div>
+
+          <div class="action-row">
+            <button type="button" class="btn-sm" style="display:flex; align-items:center; gap:.4rem;" onclick="downloadDocLocal()">
+              <span class="material-symbols-outlined">download</span> Download (.md File)
+            </button>
+            <button type="button" class="btn-sm btn-accent" style="display:flex; align-items:center; gap:.4rem;" onclick="openCloudConfigModal()">
+              <span class="material-symbols-outlined">cloud_upload</span> Direct Push to Cloud Storage & Firestore
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
+</div>
+
+<!-- Cloud Push Configuration Modal -->
+<div id="cloudModal" class="modal">
+  <div class="modal-content">
+    <div style="font-size:1.1rem; font-weight:700; color:var(--dark); display:flex; align-items:center; justify-content:space-between;">
+      <span>⚙️ Cloud Push Configuration</span>
+      <button class="icon-btn" onclick="closeCloudModal()"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <p style="margin:0; font-size:.85rem; color:#5f6368;">
+      Configure destination Cloud Storage bucket and Firestore collection parameters for direct cloud publish.
+    </p>
+
+    <div class="form-group">
+      <label>Google Cloud Project ID:</label>
+      <input type="text" id="modalProjectId" class="input-sm" value="qwiklabs-gcp-02-3932e9061bcb">
+    </div>
+
+    <div class="form-group">
+      <label>Target Cloud Storage Bucket:</label>
+      <input type="text" id="modalBucketName" class="input-sm" value="qwiklabs-gcp-02-3932e9061bcb-tribal-media">
+    </div>
+
+    <div class="form-group">
+      <label>Confluence Space Key / Subfolder:</label>
+      <input type="text" id="modalSpaceKey" class="input-sm" value="docs/">
+    </div>
+
+    <div style="display:flex; justify-content:flex-end; gap:.6rem; margin-top:.5rem;">
+      <button class="btn-sm" onclick="closeCloudModal()">Cancel</button>
+      <button class="btn-sm btn-accent" onclick="confirmCloudPush()">☁️ Confirm & Push to Cloud</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -159,7 +299,29 @@ const newChatBtn = document.getElementById("newChatBtn");
 const sessionListEl = document.getElementById("sessionList");
 const fileInput = document.getElementById("fileInput");
 
-// Sessions Storage Structure
+const chatView = document.getElementById("chatView");
+const studioView = document.getElementById("studioView");
+const navChatBtn = document.getElementById("navChatBtn");
+const navStudioBtn = document.getElementById("navStudioBtn");
+
+let generatedDocContent = "";
+let generatedDocTitle = "";
+
+function switchView(view) {
+  if (view === "chat") {
+    chatView.classList.add("active");
+    studioView.classList.remove("active");
+    navChatBtn.classList.add("active");
+    navStudioBtn.classList.remove("active");
+  } else {
+    chatView.classList.remove("active");
+    studioView.classList.add("active");
+    navChatBtn.classList.remove("active");
+    navStudioBtn.classList.add("active");
+  }
+}
+
+// Sessions Storage
 let sessions = JSON.parse(localStorage.getItem("tribal_sessions") || "[]");
 let activeSessionId = localStorage.getItem("tribal_active_session_id") || null;
 
@@ -185,6 +347,7 @@ function createNewSession() {
   saveSessions();
   renderSessionList();
   loadActiveSession();
+  switchView('chat');
 }
 
 function renameSession(id, e) {
@@ -220,6 +383,7 @@ function selectSession(id) {
   saveSessions();
   renderSessionList();
   loadActiveSession();
+  switchView('chat');
 }
 
 function renderSessionList() {
@@ -298,6 +462,49 @@ function quickAction(type) {
   } else if (type === "diagram") {
     input.value = `Generate an architecture diagram for project '${proj}' showing API Gateway, microservice core, and Firestore storage`;
   }
+  form.dispatchEvent(new Event("submit"));
+}
+
+/* Dedicated Confluence Studio Functions */
+function generateStudioDoc() {
+  const proj = document.getElementById("studioProjectSelect").value;
+  const docType = document.getElementById("docTypeSelect").value;
+  const title = document.getElementById("docTitleInput").value.trim() || "Architecture & API Specification";
+  const summary = document.getElementById("docSummaryInput").value.trim() || "General technical guidelines and microservice scope.";
+
+  generatedDocTitle = title;
+  const now = new Date().toISOString();
+
+  generatedDocContent = `# 📘 ${docType.toUpperCase()} DOCUMENT: [${proj}]\n## Title: ${title}\n\n**Created**: ${now}\n**Author**: Tribal Knowledge Agent Studio\n**Project Scope**: ${proj}\n\n---\n\n### 1. Executive Summary & Overview\n${summary}\n\n---\n\n### 2. Microservice Scope & Architecture\n- **Target Project**: \`${proj}\`\n- **Primary Infrastructure**: Google Cloud Platform (Cloud Run, Firestore, Vertex AI)\n- **Authentication**: JWT & OAuth2 RBAC Delegation\n\n---\n\n### 3. Key Decision Records & Guidelines\n1. **State Persistence**: Firestore + Vertex AI Memory Bank.\n2. **Observability**: Cloud Trace & OpenTelemetry span propagation.\n\n---\n\n### 4. Operational Gotchas & Troubleshooting\n- Explicitly set alphanumeric \`PROJECT_ID\` as string literal.\n`;
+
+  document.getElementById("docPreview").textContent = generatedDocContent;
+  document.getElementById("studioOutputCard").style.display = "flex";
+  document.getElementById("docStatusBadge").textContent = "DRAFT GENERATED";
+}
+
+function downloadDocLocal() {
+  if (!generatedDocContent) return;
+  const blob = new Blob([generatedDocContent], { type: "text/markdown" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `${generatedDocTitle.toLowerCase().replace(/\s+/g, '_')}.md`;
+  a.click();
+}
+
+function openCloudConfigModal() {
+  document.getElementById("cloudModal").classList.add("active");
+}
+
+function closeCloudModal() {
+  document.getElementById("cloudModal").classList.remove("active");
+}
+
+async function confirmCloudPush() {
+  const proj = document.getElementById("studioProjectSelect").value;
+  closeCloudModal();
+
+  switchView('chat');
+  input.value = `Generate a Confluence wiki page for project '${proj}' titled '${generatedDocTitle}' with summary: ${generatedDocContent.substring(0, 300)}`;
   form.dispatchEvent(new Event("submit"));
 }
 
